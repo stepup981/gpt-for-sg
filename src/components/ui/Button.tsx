@@ -1,14 +1,23 @@
 import React from "react";
 
 interface IButton {
-  children: string,
-  disabled?: boolean
+  children: string;
+  onClick: () => void;
+  disabled?: boolean;
+  isLoading?: boolean;
+  isError?: boolean;  
 }
 
-const CustomButton: React.FC<IButton> = ({children, disabled}) => {
+const CustomButton: React.FC<IButton> = ({ children, disabled, onClick, isLoading, isError }) => {
   return (
-    <button style={{padding: "5px", backgroundColor: "red"}} disabled={disabled}>{children}</button>
-  )
-}
+    <button
+      className={`button ${isLoading ? 'is-loading' : ''} ${isError ? 'is-danger' : 'is-link'}`}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
 
-export default CustomButton
+export default CustomButton;

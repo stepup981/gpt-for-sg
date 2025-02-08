@@ -1,39 +1,83 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-
-import CustomButton from '@/components/ui/Button'
+import React, { useState } from "react";
+import "./App.css";
+import { getToken, getModels, sendRequestToChat } from "./api/chat"; // Импортируем необходимые функции
+import CustomButton from "@/components/ui/Button";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [token, setToken] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [requestText, setRequestText] = useState<string>(""); // Добавляем состояние для текста запроса
+  const [responseMessage, setResponseMessage] = useState<string>(""); // Состояние для хранения ответа от чата
+
+  // Функция для получения токена
+  const fetchToken = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const responseToken = await getToken();
+      setToken(responseToken.access_token);
+    } catch (error) {
+      setError(true);
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Функция для отправки запроса в чат
+  const sendRequest = async () => {
+    if (!token || !requestText) {
+      console.log("Токен или текст запроса отсутствуют.");
+      return;
+    }
+
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await sendRequestToChat(token, requestText); // Отправляем запрос с токеном и текстом
+      setResponseMessage(response.choices[0]?.message.content); // Сохраняем ответ чата
+    } catch (error) {
+      setError(true);
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <CustomButton onClick={fetchToken} disabled={loading} isLoading={loading} isError={error}>
+        {loading ? "Загрузка..." : error ? "Произошла ошибка. Пробуй еще" : "Начни общение с чатиком..."}
+      </CustomButton>
+      <div>{token && `Ваш токен: ${token}`}</div> {/* Отображаем токен */}
+      <CustomButton onClick={async () => await getModels(token)}>Получить модели</CustomButton>
+
+      <div className="field">
+        <label className="label">Наименование организации</label>
+        <div className="control">
+          <input
+            className="input"
+            type="text"
+            placeholder="Наименование организации"
+            value={requestText} // Привязываем состояние
+            onChange={(e) => setRequestText(e.target.value)} // Обновляем состояние при изменении текста
+          />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <CustomButton>hello</CustomButton>
+
+      <CustomButton onClick={sendRequest} disabled={loading || !token}>
+        {loading ? "Отправка..." : "Отправить запрос"}
+      </CustomButton>
+
+      {responseMessage && (
+        <div className="response">
+          <h3>Ответ от чата:</h3>
+          <p>{responseMessage}</p> {/* Отображаем ответ от чата */}
+        </div>
+      )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;

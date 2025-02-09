@@ -1,16 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import { getToken, getModels, sendRequestToChat } from "./api/chat"; // Импортируем необходимые функции
-import CustomButton from "@/components/ui/Button";
+import { getToken, sendRequestToChat } from "./api/chat"; // Импортируем необходимые функции
+import { Button, Loader, InputLabel, Dropdown } from "./components/ui/indext";
+
+import { fieldOfActivity } from "./resources";
 
 function App() {
   const [token, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [requestText, setRequestText] = useState<string>(""); // Добавляем состояние для текста запроса
-  const [responseMessage, setResponseMessage] = useState<string>(""); // Состояние для хранения ответа от чата
+  const [requestText, setRequestText] = useState<string>("");
+  const [responseMessage, setResponseMessage] = useState<string>("");
+  const [warningMessage, setWarningMessage] = useState<string>("");
 
-  // Функция для получения токена
+  const [isLoadingBtn, setIsLoadingButton] = useState<boolean>(false);
+
   const fetchToken = async () => {
     setLoading(true);
     setError(false);
@@ -25,56 +29,57 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    fetchToken();
+  }, []);
+
   // Функция для отправки запроса в чат
   const sendRequest = async () => {
     if (!token || !requestText) {
+      setWarningMessage("Обязятельно для заполнения");
       console.log("Токен или текст запроса отсутствуют.");
       return;
     }
 
-    setLoading(true);
+    setWarningMessage("");
+
+    setIsLoadingButton(true);
     setError(false);
     try {
-      const response = await sendRequestToChat(token, requestText); // Отправляем запрос с токеном и текстом
-      setResponseMessage(response.choices[0]?.message.content); // Сохраняем ответ чата
+      const response = await sendRequestToChat(token, requestText);
+      setResponseMessage(response.choices[0]?.message.content);
     } catch (error) {
       setError(true);
       console.log(error);
     } finally {
-      setLoading(false);
+      setIsLoadingButton(false);
     }
   };
 
   return (
     <>
-      <CustomButton onClick={fetchToken} disabled={loading} isLoading={loading} isError={error}>
-        {loading ? "Загрузка..." : error ? "Произошла ошибка. Пробуй еще" : "Начни общение с чатиком..."}
-      </CustomButton>
-      <div>{token && `Ваш токен: ${token}`}</div> {/* Отображаем токен */}
-      <CustomButton onClick={async () => await getModels(token)}>Получить модели</CustomButton>
-
-      <div className="field">
-        <label className="label">Наименование организации</label>
-        <div className="control">
-          <input
-            className="input"
-            type="text"
-            placeholder="Наименование организации"
-            value={requestText} // Привязываем состояние
-            onChange={(e) => setRequestText(e.target.value)} // Обновляем состояние при изменении текста
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <InputLabel
+            labelDescription="Наименование организации"
+            labelWarning={warningMessage}
+            valueInput={requestText}
+            setText={setRequestText}
           />
-        </div>
-      </div>
+          <Dropdown list={fieldOfActivity} />
 
-      <CustomButton onClick={sendRequest} disabled={loading || !token}>
-        {loading ? "Отправка..." : "Отправить запрос"}
-      </CustomButton>
-
-      {responseMessage && (
-        <div className="response">
-          <h3>Ответ от чата:</h3>
-          <p>{responseMessage}</p> {/* Отображаем ответ от чата */}
-        </div>
+          <Button onClick={sendRequest} isLoading={isLoadingBtn} disabled={isLoadingBtn || !token}>
+            {isLoadingBtn ? "Загрузка..." : error ? "Произошла ошибка. Пробуй еще" : "Сформировать что-то"}
+          </Button>
+          {responseMessage && (
+            <div className="response">
+              <h3>Ответ от чата:</h3>
+              <p>{responseMessage}</p>
+            </div>
+          )}
+        </>
       )}
     </>
   );

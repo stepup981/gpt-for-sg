@@ -8,7 +8,7 @@ interface IButton {
   isError?: boolean;  
 }
 
-const CustomButton: React.FC<IButton> = ({ children, disabled, onClick, isLoading, isError }) => {
+const Button: React.FC<IButton> = ({ children, disabled, onClick, isLoading, isError }) => {
   return (
     <button
       className={`button ${isLoading ? 'is-loading' : ''} ${isError ? 'is-danger' : 'is-link'}`}
@@ -20,4 +20,4 @@ const CustomButton: React.FC<IButton> = ({ children, disabled, onClick, isLoadin
   );
 };
 
-export default CustomButton;
+export default Button;

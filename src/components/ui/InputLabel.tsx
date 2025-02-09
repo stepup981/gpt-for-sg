@@ -1,10 +1,10 @@
 import React from "react";
 
 interface IInputLabel {
-  labelDescription: string;
   valueInput: string;
-  setText: (text: string) => void; // Типизируем setText
-  labelWarning?: string; // Сделаем это свойство необязательным
+  setText: (text: string) => void;
+  labelWarning: string;
+  labelDescription?: string;
 }
 
 const InputLabel: React.FC<IInputLabel> = ({ labelDescription, labelWarning, valueInput, setText }) => {
@@ -13,7 +13,7 @@ const InputLabel: React.FC<IInputLabel> = ({ labelDescription, labelWarning, val
       <label className="label">{labelDescription}</label>
       <div className="control">
         <input
-          className={`input ${labelWarning ? 'is-danger' : ''}`}
+          className={`input ${labelWarning ? "is-danger" : ""}`}
           type="text"
           placeholder="Наименование организации"
           value={valueInput}

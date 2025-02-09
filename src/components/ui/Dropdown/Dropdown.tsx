@@ -1,26 +1,27 @@
 import React from "react";
-import style from './style.module.css'
+import style from "./style.module.css";
 
-interface DropdownProps {
-  selectedOption?: string;
-  onOptionSelect?: (option: string) => void;
-  isTumblerChecked?: boolean;
-  list: string[]
+interface IDropdownProps {
+  selectedOption: string;
+  onOptionSelect: (option: string) => void;
+  list: string[];
+  titleList: string;
+  warning?: string;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ selectedOption, onOptionSelect, isTumblerChecked, list }) => {
+const Dropdown: React.FC<IDropdownProps> = ({ titleList, selectedOption, onOptionSelect, list, warning }) => {
   return (
     <div className="field">
-      <label className="label">Выберите или введите текст:</label>
+      <label className="label">{titleList}</label>
+
       <div className="control">
-        <div className="select ">
+        <div className={`select ${warning ? "is-danger" : ""}`}>
           <select
             value={selectedOption}
             onChange={(e) => onOptionSelect(e.target.value)}
-            disabled={isTumblerChecked}
-            className={style.select_custom}
+            className={`${warning ? "is-danger" : style.select_custom}`}
           >
-            <option value="">Выберите...</option>
+            <option value="">Выберите сферу...</option>
             {list.map((item) => (
               <option key={item} value={item}>
                 {item}
@@ -29,6 +30,8 @@ const Dropdown: React.FC<DropdownProps> = ({ selectedOption, onOptionSelect, isT
           </select>
         </div>
       </div>
+
+      {!selectedOption && <p className="help is-danger">{warning}</p>}
     </div>
   );
 };

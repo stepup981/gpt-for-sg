@@ -1,29 +1,28 @@
-/* Стили для scrollbar */
 .select_custom {
-  overflow-y: auto; /* Включаем вертикальную прокрутку, если нужно */
-  max-height: 200px; /* Устанавливаем максимальную высоту списка */
+  overflow-y: auto;
+  max-height: 200px;
 }
 
-/* Кастомизируем scrollbar для Webkit браузеров (Chrome, Safari, Edge) */
 .select_custom::-webkit-scrollbar {
-  width: 8px; /* Устанавливаем ширину полосы прокрутки */
+  width: 8px;
 }
 
 .select_custom::-webkit-scrollbar-track {
-  background: #f0f0f0; /* Цвет фона track (области прокрутки) */
+  background: #f0f0f0;
 }
 
 .select_custom::-webkit-scrollbar-thumb {
-  background: #3273dc; /* Цвет самой полосы прокрутки */
-  border-radius: 4px; /* Закругляем края полосы прокрутки */
+  background: #3273dc;
+  border-radius: 4px;
 }
 
 .select_custom::-webkit-scrollbar-thumb:hover {
-  background: #3273dc; /* Цвет полосы при наведении */
+  background: #3273dc;
 }
 
-/* Для Firefox */
 .select_custom {
   scrollbar-width: thin;
-  scrollbar-color: #3273dc #f0f0f0; /* Цвет полосы прокрутки и её фона */
+  scrollbar-color: #3273dc #f0f0f0;
 }
+
+

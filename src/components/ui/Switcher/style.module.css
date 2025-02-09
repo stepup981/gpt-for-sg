@@ -1,0 +1,53 @@
+/* Контейнер свитчера */
+.switchContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: fit-content;
+}
+
+/* Скрытый чекбокс */
+.switchInput {
+  display: none;
+}
+
+/* Сам тумблер */
+.switchSlider {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  background: #ccc;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+/* Кружочек внутри тумблера */
+.switchSlider::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Если включено */
+.switchInput:checked + .switchSlider {
+  background: #3273dc; /* Bulma primary */
+}
+
+/* Двигаем кружочек */
+.switchInput:checked + .switchSlider::after {
+  transform: translateX(18px);
+}
+
+/* Текст возле свитчера */
+.switchLabel {
+  font-size: 10px;
+  font-weight: 500;
+}

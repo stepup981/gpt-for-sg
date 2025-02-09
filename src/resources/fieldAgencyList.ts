@@ -1,4 +1,4 @@
- const fieldOfActivity = [
+const fieldAgencyList = [
   "Автоматизация бизнес-процессов",
   "Автосалон",
   "Автосервис",
@@ -99,4 +99,4 @@
   "Юридические услуги",
 ];
 
-export default fieldOfActivity
+export default fieldAgencyList;

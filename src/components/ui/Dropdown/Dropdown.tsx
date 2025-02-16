@@ -5,11 +5,19 @@ interface IDropdownProps {
   selectedOption: string;
   onOptionSelect: (option: string) => void;
   list: string[];
+  zeroSelect: string;
   titleList: string;
   warning?: string;
 }
 
-const Dropdown: React.FC<IDropdownProps> = ({ titleList, selectedOption, onOptionSelect, list, warning }) => {
+const Dropdown: React.FC<IDropdownProps> = ({
+  titleList,
+  selectedOption,
+  zeroSelect,
+  onOptionSelect,
+  list,
+  warning,
+}) => {
   return (
     <div className="field">
       <label className="label">{titleList}</label>
@@ -21,7 +29,7 @@ const Dropdown: React.FC<IDropdownProps> = ({ titleList, selectedOption, onOptio
             onChange={(e) => onOptionSelect(e.target.value)}
             className={`${warning ? "is-danger" : style.select_custom}`}
           >
-            <option value="">Выберите сферу...</option>
+            <option value="">{zeroSelect}</option>
             {list.map((item) => (
               <option key={item} value={item}>
                 {item}

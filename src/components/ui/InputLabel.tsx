@@ -3,8 +3,8 @@ import React from "react";
 interface IInputLabel {
   valueInput: string;
   setText: (text: string) => void;
-  labelWarning: string;
   labelDescription?: string;
+  labelWarning?: string;
 }
 
 const InputLabel: React.FC<IInputLabel> = ({ labelDescription, labelWarning, valueInput, setText }) => {

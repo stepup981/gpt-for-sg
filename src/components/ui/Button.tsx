@@ -5,13 +5,13 @@ interface IButton {
   onClick: () => void;
   disabled?: boolean;
   isLoading?: boolean;
-  isError?: boolean;  
+  isError?: boolean;
 }
 
 const Button: React.FC<IButton> = ({ children, disabled, onClick, isLoading, isError }) => {
   return (
     <button
-      className={`button ${isLoading ? 'is-loading' : ''} ${isError ? 'is-danger' : 'is-link'}`}
+      className={`button ${isLoading ? "is-loading" : ""} ${isError ? "is-danger" : "is-link"}`}
       disabled={disabled}
       onClick={onClick}
     >

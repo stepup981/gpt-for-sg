@@ -4,14 +4,14 @@ export interface IToken {
 }
 
 interface IModel {
-  id: "GigaChat" | "GigaChat-Pro" | "GigaChat-Max" | string; 
-  object: string; 
-  owned_by: string; 
-  type?: string; 
+  id: "GigaChat" | "GigaChat-Pro" | "GigaChat-Max" | string;
+  object: string;
+  owned_by: string;
+  type?: string;
 }
 
-export  interface IResponseModels {
-  data: IModel[]; 
+export interface IResponseModels {
+  data: IModel[];
   object: string;
 }
 
@@ -36,4 +36,3 @@ export interface IResponseMessage {
     precached_prompt_tokens: number;
   };
 }
-

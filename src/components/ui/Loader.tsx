@@ -12,7 +12,6 @@ const Loader = () => {
           borderBottom: "2px solid #3273dc",
           borderRight: "2px solid #3273dc",
           borderLeft: "2px solid #3273dc"
-          
         }}
       ></span>
     </div>

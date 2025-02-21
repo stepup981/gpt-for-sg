@@ -1,81 +1,89 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
-import { getToken, sendRequestToChat } from "./api/chat";
-import { Button, Loader, InputLabel, Dropdown, Switcher, CheckboxGroup } from "./components/ui";
+import { sendRequestToChat } from "./api/chat";
+import {
+  NameAgency,
+  FieldAgency,
+  WorkFormat,
+  ProductField,
+  PriceSegment,
+  UpGoal,
+  BusinessProblems
+} from "./components";
+import { Button, Loader, InputLabel } from "./components/ui";
 import {
   fieldAgencyList,
   workFormatsList,
   productList,
   priceSegmentList,
   upGoalsList,
-  businessProblemsList,
+  businessProblemsList
 } from "./resources";
-import { TOKEN_EXPIRATION_TIME } from "./constants";
 
-import { useToken } from "./hooks";
+import { useToken, useLegend } from "./hooks";
 
 function App() {
-  const [loadingButton, setLoadingButton] = useState<boolean>(false);
+  const { token, loading, error } = useToken();
 
+  const [loadingButton, setLoadingButton] = useState<boolean>(false);
   const [responseMessage, setResponseMessage] = useState<string>("");
   const [warningMessage, setWarningMessage] = useState<string>("");
 
-  const [nameAgency, setNameAgency] = useState<string>("");
-  const [fieldAgency, setFieldAgency] = useState<string>("");
-  const [customField, setCustomField] = useState<string>("");
-  const [isCustomField, setIsCustomField] = useState<boolean>(false);
-
-  const [selectedWorkFormats, setSelectedWorkFormats] = useState<string[]>([]);
-  const [isCustomWorkFormat, setIsCustomWorkFormat] = useState<boolean>(false);
-  const [customWorkFormat, setCustomWorkFormat] = useState<string>("");
-  const [productAd, setProductAd] = useState<string>("");
-  const [productAdChoice, setProductAdChoice] = useState<string>("");
-
-  const [priceSegment, setPriceSegment] = useState<string>("");
-  const [strSide, setStrSide] = useState<string>("");
-
-  const [selectedUpGoals, setSelectedUpGoals] = useState<string[]>([]);
-  const [isCustomUpGoal, setIsCustomUpGoal] = useState<boolean>(false);
-  const [customUpGoal, setCustomUpGoal] = useState<string>("");
-
-  const [selectedProblems, setSelectedProblems] = useState<string[]>([]);
-  const [isCustomProblem, setIsCustomProblem] = useState<boolean>(false);
-  const [customProblem, setCustomProblem] = useState<string>("");
-
-  const finalFieldAgency = isCustomField ? customField : fieldAgency;
-  const finalWorkFormats = isCustomWorkFormat ? [customWorkFormat] : selectedWorkFormats;
-  const finalUpGoals = isCustomUpGoal ? customUpGoal : selectedUpGoals.join(", ");
-  const upProblemSpisok = isCustomProblem ? customProblem : selectedProblems.join(", ");
-
-  const { token, loading, error } = useToken();
-
-  const legend = {
+  const {
     nameAgency,
-    fieldAgency: finalFieldAgency,
-    workFormats: finalWorkFormats.join(", "),
+    setNameAgency,
+    fieldAgency,
+    setFieldAgency,
+    customField,
+    setCustomField,
+    isCustomField,
+    setIsCustomField,
+    selectedWorkFormats,
+    setSelectedWorkFormats,
+    isCustomWorkFormat,
+    setIsCustomWorkFormat,
+    customWorkFormat,
+    setCustomWorkFormat,
     productAd,
+    setProductAd,
     productAdChoice,
+    setProductAdChoice,
     priceSegment,
-    upGoals: finalUpGoals,
-    upProblemSpisok,
-    strSide
-  };
+    setPriceSegment,
+    selectedUpGoals,
+    setSelectedUpGoals,
+    isCustomUpGoal,
+    setIsCustomUpGoal,
+    customUpGoal,
+    setCustomUpGoal,
+    selectedProblems,
+    setSelectedProblems,
+    isCustomProblem,
+    setIsCustomProblem,
+    customProblem,
+    setCustomProblem,
+    strSide,
+    setStrSide,
+    legend
+  } = useLegend();
 
   const sendRequest = async () => {
     const warnings = [
       !nameAgency && "Введите название организации.",
-      !finalFieldAgency && "Выберите или введите сферу деятельности.",
+      !fieldAgency && "Выберите или введите сферу деятельности.",
       !token && "Ошибка с токеном. Попробуйте обновить страницу."
-    ].filter(Boolean).join("\n");
-  
+    ]
+      .filter(Boolean)
+      .join("\n");
+
     if (warnings) {
       setWarningMessage(warnings);
       return;
     }
-  
+
     setWarningMessage("");
     setLoadingButton(true);
-  
+
     try {
       const response = await sendRequestToChat(token, nameAgency);
       setResponseMessage(response.choices[0]?.message.content);
@@ -94,129 +102,81 @@ function App() {
       ) : (
         <>
           {/* Поле для названия организации */}
-          <div className="box name__agency">
-            <InputLabel
-              labelDescription="Наименование организации"
-              labelWarning={warningMessage}
-              valueInput={nameAgency}
-              setText={setNameAgency}
-            />
-          </div>
+          <NameAgency
+            nameAgency={nameAgency}
+            setNameAgency={setNameAgency}
+            warningMessage={warningMessage}
+          />
 
           {/* Поле для выбора сферы деятельности */}
-          <div className="box field__agency">
-            {isCustomField ? (
-              <InputLabel
-                labelDescription="Введите свою сферу"
-                labelWarning={warningMessage}
-                valueInput={customField}
-                setText={setCustomField}
-              />
-            ) : (
-              <Dropdown
-                selectedOption={fieldAgency}
-                onOptionSelect={setFieldAgency}
-                zeroSelect="Выберите сферу..."
-                list={fieldAgencyList}
-                titleList="Сфера деятельности организации"
-                warning={warningMessage}
-              />
-            )}
-            <Switcher isChecked={isCustomField} onToggle={setIsCustomField} label="Свой вариант" />
-          </div>
+          <FieldAgency
+            fieldAgency={fieldAgency}
+            setFieldAgency={setFieldAgency}
+            customField={customField}
+            setCustomField={setCustomField}
+            isCustomField={isCustomField}
+            setIsCustomField={setIsCustomField}
+            warningMessage={warningMessage}
+            fieldAgencyList={fieldAgencyList}
+          />
 
           {/* Поле для форматов работы */}
-          <div className="box work__format">
-            {isCustomWorkFormat ? (
-              <InputLabel
-                labelDescription="Введите свой формат работы"
-                labelWarning={warningMessage}
-                valueInput={customWorkFormat}
-                setText={setCustomWorkFormat}
-              />
-            ) : (
-              <CheckboxGroup
-                selectedOptions={selectedWorkFormats}
-                onOptionSelect={setSelectedWorkFormats}
-                list={workFormatsList}
-                titleList="Форматы работы"
-              />
-            )}
-            <Switcher isChecked={isCustomWorkFormat} onToggle={setIsCustomWorkFormat} label="Свой вариант" />
-          </div>
+          <WorkFormat
+            selectedWorkFormats={selectedWorkFormats}
+            setSelectedWorkFormats={setSelectedWorkFormats}
+            customWorkFormat={customWorkFormat}
+            setCustomWorkFormat={setCustomWorkFormat}
+            isCustomWorkFormat={isCustomWorkFormat}
+            setIsCustomWorkFormat={setIsCustomWorkFormat}
+            warningMessage={warningMessage}
+            workFormatsList={workFormatsList}
+          />
 
           {/* Поле для выбора товара или услуги */}
-          <div className="box product">
-            <Dropdown
-              selectedOption={productAdChoice}
-              onOptionSelect={setProductAdChoice}
-              zeroSelect="Выберите товар или услуга"
-              list={productList}
-              titleList="Товар или услуга для продвижения"
-            />
-            <InputLabel valueInput={productAd} setText={setProductAd} />
-          </div>
+          <ProductField
+            productAd={productAd}
+            setProductAd={setProductAd}
+            productAdChoice={productAdChoice}
+            setProductAdChoice={setProductAdChoice}
+            productList={productList}
+          />
 
           {/* Поле для выбора ценового сегмента */}
-          <div className="box price__segment">
-            <Dropdown
-              selectedOption={priceSegment}
-              onOptionSelect={setPriceSegment}
-              zeroSelect="Выберите ценовой сегмент"
-              list={priceSegmentList}
-              titleList="Ценовой сегмент"
-            />
-          </div>
+          <PriceSegment
+            priceSegment={priceSegment}
+            setPriceSegment={setPriceSegment}
+            priceSegmentList={priceSegmentList}
+          />
 
           {/* Поле для целей увеличения продаж */}
-          <div className="box up-goals">
-            {!isCustomUpGoal && (
-              <CheckboxGroup
-                selectedOptions={selectedUpGoals}
-                onOptionSelect={setSelectedUpGoals}
-                list={upGoalsList}
-                titleList="Цели для увеличения продаж"
-              />
-            )}
-
-            {isCustomUpGoal && (
-              <InputLabel
-                labelDescription="Введите свои цели (через запятую)"
-                labelWarning="* Цели должны быть указаны через запятую"
-                valueInput={customUpGoal}
-                setText={setCustomUpGoal}
-              />
-            )}
-
-            <Switcher isChecked={isCustomUpGoal} onToggle={setIsCustomUpGoal} label="Свой вариант" />
-          </div>
+          <UpGoal
+            selectedUpGoals={selectedUpGoals}
+            setSelectedUpGoals={setSelectedUpGoals}
+            customUpGoal={customUpGoal}
+            setCustomUpGoal={setCustomUpGoal}
+            isCustomUpGoal={isCustomUpGoal}
+            setIsCustomUpGoal={setIsCustomUpGoal}
+            upGoalsList={upGoalsList}
+          />
 
           {/* Поле для проблем бизнеса */}
-          <div className="box business-problems">
-            {!isCustomProblem && (
-              <CheckboxGroup
-                selectedOptions={selectedProblems}
-                onOptionSelect={setSelectedProblems}
-                list={businessProblemsList}
-                titleList="Проблемы бизнеса"
-              />
-            )}
-
-            {isCustomProblem && (
-              <InputLabel
-                labelDescription="Введите свои проблемы (через запятую)"
-                labelWarning="* Проблемы должны быть указаны через запятую"
-                valueInput={customProblem}
-                setText={setCustomProblem}
-              />
-            )}
-
-            <Switcher isChecked={isCustomProblem} onToggle={setIsCustomProblem} label="Свой вариант" />
-          </div>
+          <BusinessProblems
+            selectedProblems={selectedProblems}
+            setSelectedProblems={setSelectedProblems}
+            customProblem={customProblem}
+            setCustomProblem={setCustomProblem}
+            isCustomProblem={isCustomProblem}
+            setIsCustomProblem={setIsCustomProblem}
+            businessProblemsList={businessProblemsList}
+          />
 
           {/* Поле для сильных сторон */}
           <div className="box strong-sides">
-            <InputLabel labelDescription="Сильные стороны" valueInput={strSide} setText={setStrSide} />
+            <InputLabel
+              labelDescription="Сильные стороны"
+              valueInput={strSide}
+              setText={setStrSide}
+            />
           </div>
 
           {/* Кнопка отправки */}

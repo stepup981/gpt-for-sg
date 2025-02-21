@@ -7,7 +7,12 @@ interface IInputLabel {
   labelWarning?: string;
 }
 
-const InputLabel: React.FC<IInputLabel> = ({ labelDescription, labelWarning, valueInput, setText }) => {
+const InputLabel: React.FC<IInputLabel> = ({
+  labelDescription,
+  labelWarning,
+  valueInput,
+  setText
+}) => {
   return (
     <div className="field">
       <label className="label">{labelDescription}</label>

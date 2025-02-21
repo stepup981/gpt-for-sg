@@ -13,7 +13,7 @@ const CheckboxGroup: React.FC<IDropdownCheckboxProps> = ({
   selectedOptions,
   onOptionSelect,
   list,
-  warning,
+  warning
 }) => {
   const handleCheckboxChange = (item: string) => {
     const updatedOptions = selectedOptions.includes(item)

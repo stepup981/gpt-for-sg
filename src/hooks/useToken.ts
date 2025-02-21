@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getToken } from "../api/chat";
 import { TOKEN_EXPIRATION_TIME } from "../constants";
 
-export default function useToken() {
+const useToken = () => {
   const [token, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -37,4 +37,6 @@ export default function useToken() {
   }, []);
 
   return { token, loading, error };
-}
+};
+
+export default useToken;

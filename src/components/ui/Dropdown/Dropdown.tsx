@@ -16,7 +16,7 @@ const Dropdown: React.FC<IDropdownProps> = ({
   zeroSelect,
   onOptionSelect,
   list,
-  warning,
+  warning
 }) => {
   return (
     <div className="field">

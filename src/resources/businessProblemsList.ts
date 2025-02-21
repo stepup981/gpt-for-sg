@@ -6,7 +6,7 @@ const businessProblemsList = [
   "Ниже качество, чем у конкурентов",
   "Выше цены, чем у конкурентов",
   "Меньше ассортимент, чем у конкурентов",
-  "Неудобное расположение",
+  "Неудобное расположение"
 ];
 
-export default businessProblemsList
+export default businessProblemsList;

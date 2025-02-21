@@ -4,8 +4,7 @@ const workFormatsList = [
   "Офис",
   "Сайт",
   "Группа ВК",
-  "Авито",
-  
+  "Авито"
 ];
 
-export default workFormatsList
+export default workFormatsList;

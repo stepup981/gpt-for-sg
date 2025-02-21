@@ -1,8 +1,8 @@
-import axios from "axios"
+import axios from "axios";
 
 const axiosConfigChat = axios.create({
-  baseURL: 'https://salesgear.ru/test/sbergpt/',
-  withCredentials: true,
-})
+  baseURL: "https://salesgear.ru/test/sbergpt/",
+  withCredentials: true
+});
 
-export default axiosConfigChat
+export default axiosConfigChat;

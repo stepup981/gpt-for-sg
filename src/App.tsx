@@ -12,11 +12,11 @@ import {
 } from "./resources";
 import { TOKEN_EXPIRATION_TIME } from "./constants";
 
+import { useToken } from "./hooks";
+
 function App() {
-  const [token, setToken] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
+
   const [responseMessage, setResponseMessage] = useState<string>("");
   const [warningMessage, setWarningMessage] = useState<string>("");
 
@@ -34,7 +34,6 @@ function App() {
   const [priceSegment, setPriceSegment] = useState<string>("");
   const [strSide, setStrSide] = useState<string>("");
 
-  // Для целей увеличения продаж
   const [selectedUpGoals, setSelectedUpGoals] = useState<string[]>([]);
   const [isCustomUpGoal, setIsCustomUpGoal] = useState<boolean>(false);
   const [customUpGoal, setCustomUpGoal] = useState<string>("");
@@ -48,6 +47,8 @@ function App() {
   const finalUpGoals = isCustomUpGoal ? customUpGoal : selectedUpGoals.join(", ");
   const upProblemSpisok = isCustomProblem ? customProblem : selectedProblems.join(", ");
 
+  const { token, loading, error } = useToken();
+
   const legend = {
     nameAgency,
     fieldAgency: finalFieldAgency,
@@ -55,65 +56,31 @@ function App() {
     productAd,
     productAdChoice,
     priceSegment,
-    upGoals: finalUpGoals, // Добавление целей для увеличения продаж
+    upGoals: finalUpGoals,
     upProblemSpisok,
     strSide
   };
 
-  const checkStoredToken = async () => {
-    setLoading(true);
-    const storedToken = localStorage.getItem("token");
-    const storedTime = localStorage.getItem("token_time");
-    if (storedToken && storedTime) {
-      const elapsedTime = Date.now() - Number(storedTime);
-      if (elapsedTime < TOKEN_EXPIRATION_TIME) {
-        setToken(storedToken);
-        setLoading(false);
-        return;
-      }
-    }
-    await fetchToken();
-    setLoading(false);
-  };
-
-  const fetchToken = async () => {
-    setError(false);
-    try {
-      const responseToken = await getToken();
-      setToken(responseToken.access_token);
-      localStorage.setItem("token", responseToken.access_token);
-      localStorage.setItem("token_time", String(responseToken.expires_at));
-    } catch (error) {
-      setError(true);
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    checkStoredToken();
-  }, []);
-
   const sendRequest = async () => {
-    let warnings = "";
-    if (!nameAgency) warnings = "Введите название организации.";
-    if (!finalFieldAgency) warnings = "Выберите или введите сферу деятельности.";
-    if (!token) warnings = "Ошибка с токеном. Попробуйте обновить страницу.";
-
+    const warnings = [
+      !nameAgency && "Введите название организации.",
+      !finalFieldAgency && "Выберите или введите сферу деятельности.",
+      !token && "Ошибка с токеном. Попробуйте обновить страницу."
+    ].filter(Boolean).join("\n");
+  
     if (warnings) {
       setWarningMessage(warnings);
       return;
     }
-
+  
     setWarningMessage("");
-    setError(false);
     setLoadingButton(true);
-
+  
     try {
       const response = await sendRequestToChat(token, nameAgency);
       setResponseMessage(response.choices[0]?.message.content);
       localStorage.setItem("legend", JSON.stringify(legend));
     } catch (error) {
-      setError(true);
       console.log(error);
     } finally {
       setLoadingButton(false);

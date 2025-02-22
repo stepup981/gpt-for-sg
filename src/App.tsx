@@ -8,9 +8,10 @@ import {
   ProductField,
   PriceSegment,
   UpGoal,
-  BusinessProblems
+  BusinessProblems,
+  StrongSides
 } from "./components";
-import { Button, Loader, InputLabel } from "./components/ui";
+import { Button, Loader, InputLabel, Dropdown, CheckboxGroup } from "./components/ui";
 import {
   fieldAgencyList,
   workFormatsList,
@@ -23,12 +24,11 @@ import {
 import { useToken, useLegend } from "./hooks";
 
 function App() {
+  const [loadingButton, setLoadingButton] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
+  const [warningMessage, setWarningMessage] = useState("");
+
   const { token, loading, error } = useToken();
-
-  const [loadingButton, setLoadingButton] = useState<boolean>(false);
-  const [responseMessage, setResponseMessage] = useState<string>("");
-  const [warningMessage, setWarningMessage] = useState<string>("");
-
   const {
     nameAgency,
     setNameAgency,
@@ -85,7 +85,11 @@ function App() {
     setLoadingButton(true);
 
     try {
-      const response = await sendRequestToChat(token, nameAgency);
+      const valueLegend = Object.values(legend);
+      const legendToString =
+        "Сформируй мне рекламную компанию по следующим пунктам и параметрам" +
+        valueLegend.filter((field) => field != "").join(",");
+      const response = await sendRequestToChat(token, legendToString);
       setResponseMessage(response.choices[0]?.message.content);
       localStorage.setItem("legend", JSON.stringify(legend));
     } catch (error) {
@@ -171,13 +175,7 @@ function App() {
           />
 
           {/* Поле для сильных сторон */}
-          <div className="box strong-sides">
-            <InputLabel
-              labelDescription="Сильные стороны"
-              valueInput={strSide}
-              setText={setStrSide}
-            />
-          </div>
+          <StrongSides strSide={strSide} setStrSide={setStrSide} />
 
           {/* Кнопка отправки */}
           <Button onClick={sendRequest} disabled={loadingButton} isLoading={loadingButton}>

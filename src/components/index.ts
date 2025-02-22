@@ -5,3 +5,4 @@ export { default as ProductField } from "./ProductField";
 export { default as PriceSegment } from "./PriceSegment";
 export { default as UpGoal } from "./UpGoal";
 export { default as BusinessProblems } from "./BusinessProblems";
+export { default as StrongSides } from "./StrongSides";

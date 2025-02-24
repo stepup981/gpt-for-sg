@@ -4,8 +4,25 @@ import { TOKEN_EXPIRATION_TIME } from "../constants";
 
 const useToken = () => {
   const [token, setToken] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorToken, setErrorToken] = useState<boolean>(false);
+  
+  const fetchNewToken = async () => {
+    setLoading(true);
+    setErrorToken(false)
+
+    try {
+      const responseToken = await getToken();
+      setToken(responseToken.access_token);
+      localStorage.setItem("token", responseToken.access_token);
+      localStorage.setItem("token_time", String(responseToken.expires_at));
+    } catch (error) {
+      console.log(error);
+      setErrorToken(true)
+    } finally {
+      setLoading(false)
+    }
+  };
 
   useEffect(() => {
     const checkStoredToken = async () => {
@@ -21,22 +38,13 @@ const useToken = () => {
         }
       }
 
-      try {
-        const responseToken = await getToken();
-        setToken(responseToken.access_token);
-        localStorage.setItem("token", responseToken.access_token);
-        localStorage.setItem("token_time", String(responseToken.expires_at));
-      } catch (error) {
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
+      await fetchNewToken()
     };
 
     checkStoredToken();
   }, []);
 
-  return { token, loading, error };
+  return { token, loading, errorToken, fetchNewToken };
 };
 
 export default useToken;

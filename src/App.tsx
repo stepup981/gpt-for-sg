@@ -9,7 +9,8 @@ import {
   PriceSegment,
   UpGoal,
   BusinessProblems,
-  StrongSides
+  StrongSides,
+  TargetAudienceGenerator
 } from "./components";
 import { Button, Loader, InputLabel, Dropdown, CheckboxGroup } from "./components/ui";
 import {
@@ -28,7 +29,7 @@ function App() {
   const [responseMessage, setResponseMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
 
-  const { token, loading, error } = useToken();
+  const { token, loading, errorToken } = useToken();
   const {
     nameAgency,
     setNameAgency,
@@ -67,37 +68,37 @@ function App() {
     legend
   } = useLegend();
 
-  const sendRequest = async () => {
-    const warnings = [
-      !nameAgency && "Введите название организации.",
-      !fieldAgency && "Выберите или введите сферу деятельности.",
-      !token && "Ошибка с токеном. Попробуйте обновить страницу."
-    ]
-      .filter(Boolean)
-      .join("\n");
+  // const sendRequest = async () => {
+  //   const warnings = [
+  //     !nameAgency && "Введите название организации.",
+  //     !fieldAgency && "Выберите или введите сферу деятельности.",
+  //     !token && "Ошибка с токеном. Попробуйте обновить страницу."
+  //   ]
+  //     .filter(Boolean)
+  //     .join("\n");
 
-    if (warnings) {
-      setWarningMessage(warnings);
-      return;
-    }
+  //   if (warnings) {
+  //     setWarningMessage(warnings);
+  //     return;
+  //   }
 
-    setWarningMessage("");
-    setLoadingButton(true);
+  //   setWarningMessage("");
+  //   setLoadingButton(true);
 
-    try {
-      const valueLegend = Object.values(legend);
-      const legendToString =
-        "Сформируй мне рекламную компанию по следующим пунктам и параметрам" +
-        valueLegend.filter((field) => field != "").join(",");
-      const response = await sendRequestToChat(token, legendToString);
-      setResponseMessage(response.choices[0]?.message.content);
-      localStorage.setItem("legend", JSON.stringify(legend));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingButton(false);
-    }
-  };
+  //   try {
+  //     const valueLegend = Object.values(legend);
+  //     const legendToString =
+  //       "Сформируй мне рекламную компанию по следующим пунктам и параметрам" +
+  //       valueLegend.filter((field) => field != "").join(",");
+  //     const response = await sendRequestToChat(token, legendToString);
+  //     setResponseMessage(response.choices[0]?.message.content);
+  //     localStorage.setItem("legend", JSON.stringify(legend));
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoadingButton(false);
+  //   }
+  // };
 
   return (
     <>
@@ -177,18 +178,15 @@ function App() {
           {/* Поле для сильных сторон */}
           <StrongSides strSide={strSide} setStrSide={setStrSide} />
 
-          {/* Кнопка отправки */}
-          <Button onClick={sendRequest} disabled={loadingButton} isLoading={loadingButton}>
-            {error ? "Произошла ошибка. Попробуйте еще раз." : "Сформировать рекламу"}
-          </Button>
+          {/* Поле ответа ИИ */}
+          <TargetAudienceGenerator 
+            warningMessage={warningMessage}
+            setWarningMessage={setWarningMessage}
+            fieldAgency={fieldAgency}
+            nameAgency={nameAgency}
+          />
 
-          {/* Ответ от сервера */}
-          {responseMessage && (
-            <div className="response">
-              <h3>Ответ от чата:</h3>
-              <p>{responseMessage}</p>
-            </div>
-          )}
+          
         </>
       )}
     </>

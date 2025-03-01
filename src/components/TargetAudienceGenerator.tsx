@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { sendRequestToChat } from "../api/chat";
 import { Button, Loader } from "./ui";
 import { useLegend, useToken } from "../hooks";
-
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 interface ITargetAudienceGeneratorProps {
   warningMessage: string;
-  fieldAgency: string
-  nameAgency: string
+  fieldAgency: string;
+  nameAgency: string;
+  customField: string;
   setWarningMessage: (value: string) => void;
 }
 
@@ -14,15 +16,15 @@ const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
   warningMessage,
   setWarningMessage,
   fieldAgency,
-  nameAgency
+  nameAgency,
+  customField
 }) => {
   const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
-  const [errorOccurred, setErrorOccurred] = useState(false); 
+  const [errorOccurred, setErrorOccurred] = useState(false);
 
   const { token, fetchNewToken } = useToken();
-  const {  selectedUpGoals, selectedProblems, strSide, legend } =
-    useLegend();
+  const { selectedUpGoals, selectedProblems, strSide, legend } = useLegend();
 
   const generatePrompt = () => {
     let prompt =
@@ -40,8 +42,8 @@ const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
       prompt += `, учитывая сильные стороны: ${strSide}`;
     }
 
-    if (fieldAgency) {
-      prompt += `, Бизнес сфера: ${fieldAgency}`;
+    if (fieldAgency || customField) {
+      prompt += `, Бизнес сфера: ${fieldAgency ? fieldAgency : customField}`;
     }
 
     prompt += `\n\nРанжировать целевые аудитории по степени их перспективности, основываясь на следующих критериях:`;
@@ -56,18 +58,18 @@ const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
   };
 
   const handleGenerate = async () => {
-    if (!nameAgency || !fieldAgency) {
+    if (!nameAgency || (!fieldAgency && !customField)) {
       setWarningMessage("Обязательно для заполнения.");
       return;
     }
 
     setWarningMessage("");
-    setErrorOccurred(false); 
+    setErrorOccurred(false);
     setLoading(true);
 
     try {
       const prompt = generatePrompt();
-      console.log(prompt)
+      console.log(prompt);
       const response = await sendRequestToChat(token, prompt);
       const result = response.choices[0]?.message.content || "Ошибка получения данных.";
       setResponseMessage(result);
@@ -75,7 +77,7 @@ const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
       localStorage.setItem("otvet_GA_hunt", result);
     } catch (error) {
       console.error(error);
-      setErrorOccurred(true); 
+      setErrorOccurred(true);
       setWarningMessage(
         "Обнаружен сбой. Запросите новый токен. Если не получилось, значит ведутся тех. работы. Попробуйте позже."
       );
@@ -102,7 +104,7 @@ const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
       {responseMessage && (
         <div className="response">
           <h3>Сгенерированные ЦА</h3>
-          <p>{responseMessage}</p>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{responseMessage}</ReactMarkdown>
         </div>
       )}
     </div>

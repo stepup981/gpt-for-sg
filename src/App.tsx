@@ -68,38 +68,6 @@ function App() {
     legend
   } = useLegend();
 
-  // const sendRequest = async () => {
-  //   const warnings = [
-  //     !nameAgency && "Введите название организации.",
-  //     !fieldAgency && "Выберите или введите сферу деятельности.",
-  //     !token && "Ошибка с токеном. Попробуйте обновить страницу."
-  //   ]
-  //     .filter(Boolean)
-  //     .join("\n");
-
-  //   if (warnings) {
-  //     setWarningMessage(warnings);
-  //     return;
-  //   }
-
-  //   setWarningMessage("");
-  //   setLoadingButton(true);
-
-  //   try {
-  //     const valueLegend = Object.values(legend);
-  //     const legendToString =
-  //       "Сформируй мне рекламную компанию по следующим пунктам и параметрам" +
-  //       valueLegend.filter((field) => field != "").join(",");
-  //     const response = await sendRequestToChat(token, legendToString);
-  //     setResponseMessage(response.choices[0]?.message.content);
-  //     localStorage.setItem("legend", JSON.stringify(legend));
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoadingButton(false);
-  //   }
-  // };
-
   return (
     <>
       {loading ? (
@@ -184,6 +152,7 @@ function App() {
             setWarningMessage={setWarningMessage}
             fieldAgency={fieldAgency}
             nameAgency={nameAgency}
+            customField={customField}
           />
 
           

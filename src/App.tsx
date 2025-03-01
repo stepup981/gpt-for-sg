@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { sendRequestToChat } from "./api/chat";
 import {
@@ -67,6 +67,13 @@ function App() {
     setStrSide,
     legend
   } = useLegend();
+
+
+  useEffect(() => {
+    return () => {
+      console.log(legend)
+    }
+  }, [])
 
   return (
     <>
@@ -147,14 +154,11 @@ function App() {
           <StrongSides strSide={strSide} setStrSide={setStrSide} />
 
           {/* Поле ответа ИИ */}
-          <TargetAudienceGenerator 
+          <TargetAudienceGenerator
             warningMessage={warningMessage}
             setWarningMessage={setWarningMessage}
             legend={legend}
-
           />
-
-          
         </>
       )}
     </>

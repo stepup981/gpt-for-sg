@@ -1,25 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { sendRequestToChat } from "../api/chat";
 import { useToken } from "../hooks";
 import { ILegendValues } from "@/hooks/useLegend";
 
 interface IUseTargetAudienceGeneratorResult {
-  responseMessage: string;
+  targetAudienceResponse: string;
   errorOccurred: boolean;
   isLoading: boolean;
   warningMessage: string;
   generateTargetAudience: () => Promise<void>;
 }
 
-const useTargetAudienceGenerator = (legend: ILegendValues): IUseTargetAudienceGeneratorResult => {
-  const [responseMessage, setResponseMessage] = useState<string>("");
+const useTargetAudienceGenerator = (
+  legend: ILegendValues,
+  setWarningMessage: (value: string) => void
+): IUseTargetAudienceGeneratorResult => {
+  const [targetAudienceResponse, setTargetAudienceResponse] = useState<string>("");
   const [isLoading, setLoading] = useState<boolean>(false);
   const [errorOccurred, setErrorOccurred] = useState<boolean>(false);
-  const [warningMessage, setWarningMessage] = useState<string>("");
   const { token } = useToken();
 
   const generatePrompt = () => {
-    let prompt = "Определить 3 наиболее перспективные целевые аудитории из указанных бизнес-проблем:";
+    let prompt =
+      "Определить 3 наиболее перспективные целевые аудитории из указанных бизнес-проблем:";
 
     if (legend.upProblemSpisok) {
       prompt += ` ${legend.upProblemSpisok}`;
@@ -57,9 +60,8 @@ const useTargetAudienceGenerator = (legend: ILegendValues): IUseTargetAudienceGe
     try {
       const response = await sendRequestToChat(token, prompt);
       const result = response.choices[0]?.message.content || "Ошибка получения данных.";
-      setResponseMessage(result);
-      localStorage.setItem("legend", JSON.stringify(legend));
-      localStorage.setItem("targetAudienceResponse", result); // Переименовал переменную
+      setTargetAudienceResponse(result); 
+      localStorage.setItem("targetAudienceResponse", result);
     } catch (error) {
       console.error(error);
       setErrorOccurred(true);
@@ -71,6 +73,13 @@ const useTargetAudienceGenerator = (legend: ILegendValues): IUseTargetAudienceGe
     }
   };
 
+  useEffect(() => {
+    const savedResponse = localStorage.getItem("targetAudienceResponse");
+    if (savedResponse) {
+      setTargetAudienceResponse(savedResponse);
+    }
+  }, []);
+
   const generateTargetAudience = async () => {
     if (!legend.nameAgency || !legend.fieldAgency) {
       setWarningMessage("Обязательно для заполнения.");
@@ -80,11 +89,11 @@ const useTargetAudienceGenerator = (legend: ILegendValues): IUseTargetAudienceGe
   };
 
   return {
-    responseMessage,
+    targetAudienceResponse,
     errorOccurred,
     isLoading,
-    warningMessage,
-    generateTargetAudience,
+    warningMessage: "",
+    generateTargetAudience
   };
 };
 

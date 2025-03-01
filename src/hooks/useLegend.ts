@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 
-// Типизация для всех состояний
 export interface ILegendValues {
   nameAgency: string;
   fieldAgency: string;

@@ -150,9 +150,8 @@ function App() {
           <TargetAudienceGenerator 
             warningMessage={warningMessage}
             setWarningMessage={setWarningMessage}
-            fieldAgency={fieldAgency}
-            nameAgency={nameAgency}
-            customField={customField}
+            legend={legend}
+
           />
 
           

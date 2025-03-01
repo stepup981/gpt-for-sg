@@ -1,49 +1,47 @@
 import React, { useState } from "react";
 import { sendRequestToChat } from "../api/chat";
 import { Button, Loader } from "./ui";
-import { useLegend, useToken } from "../hooks";
+import { useToken } from "../hooks";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { ILegendValues } from "@/hooks/useLegend";
 interface ITargetAudienceGeneratorProps {
   warningMessage: string;
-  fieldAgency: string;
-  nameAgency: string;
-  customField: string;
   setWarningMessage: (value: string) => void;
+  legend: ILegendValues
 }
 
 const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
   warningMessage,
   setWarningMessage,
-  fieldAgency,
-  nameAgency,
-  customField
+  legend
 }) => {
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [errorOccurred, setErrorOccurred] = useState(false);
 
-  const { token, fetchNewToken } = useToken();
-  const { selectedUpGoals, selectedProblems, strSide, legend } = useLegend();
+  const { token, fetchNewToken, loading } = useToken();
+  const { nameAgency, fieldAgency, upGoals, upProblemSpisok, strSide } = legend
 
   const generatePrompt = () => {
     let prompt =
       "Определить 3 наиболее перспективные целевые аудитории из указанных бизнес-проблем:";
 
-    if (selectedProblems.length) {
-      prompt += ` ${selectedProblems.join(", ")}`;
+    if (upProblemSpisok) {
+      prompt += ` ${upProblemSpisok}`;
     }
 
-    if (selectedUpGoals.length) {
-      prompt += `, что приведет к одной конкретной цели рекламной кампании: ${selectedUpGoals.join(", ")}`;
+    if (upGoals) {
+      prompt += `, что приведет к одной конкретной цели рекламной кампании: ${upGoals}`;
     }
 
     if (strSide) {
       prompt += `, учитывая сильные стороны: ${strSide}`;
     }
 
-    if (fieldAgency || customField) {
-      prompt += `, Бизнес сфера: ${fieldAgency ? fieldAgency : customField}`;
+    if (fieldAgency) {
+
+      prompt += `, Бизнес сфера: ${fieldAgency}`;
     }
 
     prompt += `\n\nРанжировать целевые аудитории по степени их перспективности, основываясь на следующих критериях:`;
@@ -58,7 +56,7 @@ const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
   };
 
   const handleGenerate = async () => {
-    if (!nameAgency || (!fieldAgency && !customField)) {
+    if (!nameAgency || !fieldAgency) {
       setWarningMessage("Обязательно для заполнения.");
       return;
     }
@@ -79,34 +77,45 @@ const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
       console.error(error);
       setErrorOccurred(true);
       setWarningMessage(
-        "Обнаружен сбой. Запросите новый токен. Если не получилось, значит ведутся тех. работы. Попробуйте позже."
+        "Обнаружен сбой. Запросите новый токен и нажмите на 'Сгенерировать ЦА'. Если не получилось, значит ведутся тех. работы. Попробуйте позже."
       );
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div>
-      <Button onClick={handleGenerate} disabled={loading} isLoading={loading}>
-        Сгенерировать ЦА
-      </Button>
+      <div className="block">
+        <Button onClick={handleGenerate} disabled={isLoading} isLoading={isLoading}>
+          Сгенерировать ЦА
+        </Button>
+      </div>
 
       {/* Отображаем ошибку только если она произошла */}
       {errorOccurred && (
         <div className="error-message">
           <p className="help is-danger">{warningMessage}</p>
-          <Button onClick={fetchNewToken}>Запросить новый токен</Button>
+          <Button onClick={fetchNewToken} isLoading={loading} disabled={loading}>
+            Запросить новый токен
+          </Button>
         </div>
       )}
 
       {/* Выводим результат, если он есть */}
-      {responseMessage && (
-        <div className="response">
-          <h3>Сгенерированные ЦА</h3>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{responseMessage}</ReactMarkdown>
-        </div>
-      )}
+      <>
+        {isLoading ? (
+          <Loader></Loader>
+        ) : (
+          responseMessage && (
+            <div className="box response">
+              <h2 className="title is 2">Сгенерированные ЦА</h2>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{responseMessage}</ReactMarkdown>
+            </div>
+          )
+        )}
+      </>
     </div>
   );
 };

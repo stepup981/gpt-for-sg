@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 
 // Типизация для всех состояний
-interface LegendValues {
+export interface ILegendValues {
   nameAgency: string;
   fieldAgency: string;
   workFormats: string;
@@ -38,7 +38,6 @@ const useLegend = () => {
 
   const [strSide, setStrSide] = useState<string>("");
 
-  // Итоговые значения (если включены "свои" поля, то используем их)
   const finalFieldAgency = useMemo(
     () => (isCustomField ? customField : fieldAgency),
     [isCustomField, customField, fieldAgency]
@@ -56,7 +55,7 @@ const useLegend = () => {
     [isCustomProblem, customProblem, selectedProblems]
   );
 
-  const legend: LegendValues = useMemo(
+  const legend: ILegendValues = useMemo(
     () => ({
       nameAgency,
       fieldAgency: finalFieldAgency,

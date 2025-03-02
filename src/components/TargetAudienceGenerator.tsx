@@ -43,7 +43,13 @@ const TargetAudienceGenerator = () => {
           targetAudienceResponse && (
             <div className="box response">
               <h2 className="title is 2">Сгенерированные ЦА</h2>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{targetAudienceResponse}</ReactMarkdown>
+              <div className="markdown">
+                <ReactMarkdown
+                  children={targetAudienceResponse}
+                  remarkPlugins={[remarkGfm]}
+                ></ReactMarkdown>
+              </div>
+              ={" "}
             </div>
           )
         )}

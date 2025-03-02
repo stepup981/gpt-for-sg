@@ -4,3 +4,24 @@
   padding: 2rem;
   text-align: left;
 }
+
+.markdown ul {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+
+.markdown ol {
+  margin-left: 20px;
+}
+
+.markdown code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  font-weight: bold;
+}

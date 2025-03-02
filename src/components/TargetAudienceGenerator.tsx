@@ -2,28 +2,17 @@ import React from "react";
 import { Button, Loader } from "./ui";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useTargetAudienceGenerator, useToken } from "@/hooks/"; 
-import { ILegendValues } from "@/hooks/useLegend";
+import { useTargetAudienceGenerator } from "@/hooks/"; 
+import { useLegendStore } from "@/store";
 
-interface ITargetAudienceGeneratorProps {
-  warningMessage: string;
-  setWarningMessage: (value: string) => void;
-  legend: ILegendValues;
-}
-
-const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
-  warningMessage,
-  setWarningMessage,
-  legend
-}) => {
+const TargetAudienceGenerator = () => {
+  const { legend, setLegend } = useLegendStore();
   const {
     targetAudienceResponse,
     errorOccurred,
     isLoading,
-    warningMessage: generatedWarningMessage,
     generateTargetAudience
-  } = useTargetAudienceGenerator(legend, setWarningMessage);
-  const { fetchNewToken } = useToken();
+  } = useTargetAudienceGenerator();
 
   return (
     <div>
@@ -36,15 +25,15 @@ const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
       {/* Отображаем ошибку только если она произошла */}
       {errorOccurred && (
         <div className="error-message">
-          <p className="help is-danger">{generatedWarningMessage || warningMessage}</p>
-          <Button onClick={fetchNewToken} isLoading={isLoading} disabled={isLoading}>
+          <p className="help is-danger">{legend.warningMessage}</p>
+          <Button onClick={() => setLegend({ warningMessage: "" })} isLoading={isLoading} disabled={isLoading}>
             Запросить новый токен
           </Button>
         </div>
       )}
 
       {/* Выводим результат, если он есть */}
-      <>
+      <div>
         {isLoading ? (
           <Loader />
         ) : (
@@ -55,7 +44,7 @@ const TargetAudienceGenerator: React.FC<ITargetAudienceGeneratorProps> = ({
             </div>
           )
         )}
-      </>
+      </div>
     </div>
   );
 };

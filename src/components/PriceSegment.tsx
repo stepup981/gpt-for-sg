@@ -1,22 +1,16 @@
 // PriceSegmentField.tsx
 import React from "react";
 import { Dropdown } from "./ui";
-interface IPriceSegmentFieldProps {
-  priceSegment: string;
-  setPriceSegment: (value: string) => void;
-  priceSegmentList: string[];
-}
+import { priceSegmentList } from "@/resources";
+import { useLegendStore } from "@/store";
 
-const PriceSegment: React.FC<IPriceSegmentFieldProps> = ({
-  priceSegment,
-  setPriceSegment,
-  priceSegmentList
-}) => {
+const PriceSegment = () => {
+  const { legend, setLegend } = useLegendStore();
   return (
     <div className="box price__segment">
       <Dropdown
-        selectedOption={priceSegment}
-        onOptionSelect={setPriceSegment}
+        selectedOption={legend.priceSegment}
+        onOptionSelect={(value) => setLegend({ priceSegment: value })}
         list={priceSegmentList}
         titleList="Ценовой сегмент"
         zeroSelect="Выберите ценовой сегмент"

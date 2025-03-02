@@ -1,20 +1,18 @@
 import { useState, useEffect } from "react";
 import { sendRequestToChat } from "../api/chat";
 import { useToken } from "../hooks";
+import { useLegendStore } from "@/store";
 import { ILegendValues } from "@/hooks/useLegend";
 
 interface IUseTargetAudienceGeneratorResult {
   targetAudienceResponse: string;
   errorOccurred: boolean;
   isLoading: boolean;
-  warningMessage: string;
   generateTargetAudience: () => Promise<void>;
 }
 
-const useTargetAudienceGenerator = (
-  legend: ILegendValues,
-  setWarningMessage: (value: string) => void
-): IUseTargetAudienceGeneratorResult => {
+const useTargetAudienceGenerator = (): IUseTargetAudienceGeneratorResult => {
+  const { legend, setLegend } = useLegendStore();
   const [targetAudienceResponse, setTargetAudienceResponse] = useState<string>("");
   const [isLoading, setLoading] = useState<boolean>(false);
   const [errorOccurred, setErrorOccurred] = useState<boolean>(false);
@@ -24,8 +22,8 @@ const useTargetAudienceGenerator = (
     let prompt =
       "Определить 3 наиболее перспективные целевые аудитории из указанных бизнес-проблем:";
 
-    if (legend.upProblemSpisok) {
-      prompt += ` ${legend.upProblemSpisok}`;
+    if (legend.upProblems) {
+      prompt += ` ${legend.upProblems}`;
     }
 
     if (legend.upGoals) {
@@ -55,19 +53,20 @@ const useTargetAudienceGenerator = (
     const prompt = generatePrompt();
     setLoading(true);
     setErrorOccurred(false);
-    setWarningMessage("");
+    setLegend({ warningMessage: "" }); // очищаем предыдущее сообщение
 
     try {
       const response = await sendRequestToChat(token, prompt);
       const result = response.choices[0]?.message.content || "Ошибка получения данных.";
-      setTargetAudienceResponse(result); 
+      setTargetAudienceResponse(result);
       localStorage.setItem("targetAudienceResponse", result);
     } catch (error) {
       console.error(error);
       setErrorOccurred(true);
-      setWarningMessage(
-        "Обнаружен сбой. Запросите новый токен и нажмите на 'Сгенерировать ЦА'. Если не получилось, значит ведутся тех. работы. Попробуйте позже."
-      );
+      setLegend({
+        warningMessage:
+          "Обнаружен сбой. Запросите новый токен и нажмите на 'Сгенерировать ЦА'. Если не получилось, значит ведутся тех. работы. Попробуйте позже."
+      });
     } finally {
       setLoading(false);
     }
@@ -82,7 +81,7 @@ const useTargetAudienceGenerator = (
 
   const generateTargetAudience = async () => {
     if (!legend.nameAgency || !legend.fieldAgency) {
-      setWarningMessage("Обязательно для заполнения.");
+      setLegend({ warningMessage: "Поле обязательно для заполнения" });
       return;
     }
     await handleApiRequest();
@@ -92,7 +91,6 @@ const useTargetAudienceGenerator = (
     targetAudienceResponse,
     errorOccurred,
     isLoading,
-    warningMessage: "",
     generateTargetAudience
   };
 };

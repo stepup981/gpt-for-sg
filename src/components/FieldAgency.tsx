@@ -1,48 +1,37 @@
-// FieldAgencyField.tsx
 import React from "react";
 import { InputLabel, Dropdown, Switcher } from "./ui";
+import { useLegendStore } from "@/store";
+import { fieldAgencyList } from "@/resources";
 
-interface FieldAgencyFieldProps {
-  fieldAgency: string;
-  setFieldAgency: (value: string) => void;
-  customField: string;
-  setCustomField: (value: string) => void;
-  isCustomField: boolean;
-  setIsCustomField: (value: boolean) => void;
-  warningMessage: string;
-  fieldAgencyList: string[];
-}
+const FieldAgency: React.FC = () => {
+  const { legend, setLegend } = useLegendStore();
+  const setIsCustomField = (value: boolean) => {
+    setLegend({ 
+      isCustomField: value,
+      fieldAgency: value ? "" : legend.fieldAgency,
+    });
+  };
 
-const FieldAgency: React.FC<FieldAgencyFieldProps> = ({
-  fieldAgency,
-  setFieldAgency,
-  customField,
-  setCustomField,
-  isCustomField,
-  setIsCustomField,
-  warningMessage,
-  fieldAgencyList
-}) => {
   return (
     <div className="box field__agency">
-      {isCustomField ? (
+      {legend.isCustomField ? (
         <InputLabel
           labelDescription="Введите свою сферу"
-          valueInput={customField}
-          setText={setCustomField}
-          labelWarning={warningMessage}
+          valueInput={legend.customField}
+          setText={(value) => setLegend({ customField: value })}
+          labelWarning={legend.warningMessage}
         />
       ) : (
         <Dropdown
-          selectedOption={fieldAgency}
-          onOptionSelect={setFieldAgency}
+          selectedOption={legend.fieldAgency}
+          onOptionSelect={(value) => setLegend({ fieldAgency: value })}
           list={fieldAgencyList}
           titleList="Сфера деятельности организации"
           zeroSelect="Выберите сферу..."
-          warning={warningMessage}
+          warning={legend.warningMessage}
         />
       )}
-      <Switcher label="Свой вариант" isChecked={isCustomField} onToggle={setIsCustomField} />
+      <Switcher label="Свой вариант" isChecked={legend.isCustomField} onToggle={setIsCustomField} />
     </div>
   );
 };

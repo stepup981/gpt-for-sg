@@ -1,48 +1,39 @@
-// WorkFormatField.tsx
 import React from "react";
 import { InputLabel, Switcher, CheckboxGroup } from "./ui";
+import { useLegendStore } from "@/store";
+import { workFormatsList } from "@/resources";
 
-interface IWorkFormatFieldProps {
-  selectedWorkFormats: string[];
-  setSelectedWorkFormats: (options: string[]) => void;
-  customWorkFormat: string;
-  setCustomWorkFormat: (value: string) => void;
-  isCustomWorkFormat: boolean;
-  setIsCustomWorkFormat: (value: boolean) => void;
-  warningMessage: string;
-  workFormatsList: string[];
-}
+const WorkFormat: React.FC = () => {
+  const { legend, setLegend } = useLegendStore();
 
-const WorkFormat: React.FC<IWorkFormatFieldProps> = ({
-  selectedWorkFormats,
-  setSelectedWorkFormats,
-  customWorkFormat,
-  setCustomWorkFormat,
-  isCustomWorkFormat,
-  setIsCustomWorkFormat,
-  warningMessage,
-  workFormatsList
-}) => {
+  const setIsCustomWorkFormat = (value: boolean) => {
+    setLegend({
+      isCustomWorkFormat: value,
+      workFormats: value ? [] : legend.workFormats, 
+      customWorkFormat: value ? "" : legend.customWorkFormat,
+    });
+  };
+
   return (
     <div className="box work__format">
-      {isCustomWorkFormat ? (
+      {legend.isCustomWorkFormat ? (
         <InputLabel
           labelDescription="Введите свой формат работы"
-          valueInput={customWorkFormat}
-          setText={setCustomWorkFormat}
-          labelWarning={warningMessage}
+          valueInput={legend.customWorkFormat}
+          setText={(value) => setLegend({customWorkFormat: value})}
+          labelWarning=""
         />
       ) : (
         <CheckboxGroup
-          selectedOptions={selectedWorkFormats}
-          onOptionSelect={setSelectedWorkFormats}
-          list={workFormatsList}
+          selectedOptions={legend.workFormats}
+          onOptionSelect={(value) => setLegend({workFormats: value})}
+          list={workFormatsList} 
           titleList="Форматы работы"
         />
       )}
       <Switcher
         label="Свой вариант"
-        isChecked={isCustomWorkFormat}
+        isChecked={legend.isCustomWorkFormat}
         onToggle={setIsCustomWorkFormat}
       />
     </div>

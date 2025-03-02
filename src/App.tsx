@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { sendRequestToChat } from "./api/chat";
 import {
   NameAgency,
   FieldAgency,
@@ -12,68 +11,14 @@ import {
   StrongSides,
   TargetAudienceGenerator
 } from "./components";
-import { Button, Loader, InputLabel, Dropdown, CheckboxGroup } from "./components/ui";
-import {
-  fieldAgencyList,
-  workFormatsList,
-  productList,
-  priceSegmentList,
-  upGoalsList,
-  businessProblemsList
-} from "./resources";
+import { Loader } from "./components/ui";
 
 import { useToken, useLegend } from "./hooks";
+import { useLegendStore } from "./store";
 
 function App() {
-  const [loadingButton, setLoadingButton] = useState(false);
-  const [responseMessage, setResponseMessage] = useState("");
-  const [warningMessage, setWarningMessage] = useState("");
 
   const { token, loading, errorToken } = useToken();
-  const {
-    nameAgency,
-    setNameAgency,
-    fieldAgency,
-    setFieldAgency,
-    customField,
-    setCustomField,
-    isCustomField,
-    setIsCustomField,
-    selectedWorkFormats,
-    setSelectedWorkFormats,
-    isCustomWorkFormat,
-    setIsCustomWorkFormat,
-    customWorkFormat,
-    setCustomWorkFormat,
-    productAd,
-    setProductAd,
-    productAdChoice,
-    setProductAdChoice,
-    priceSegment,
-    setPriceSegment,
-    selectedUpGoals,
-    setSelectedUpGoals,
-    isCustomUpGoal,
-    setIsCustomUpGoal,
-    customUpGoal,
-    setCustomUpGoal,
-    selectedProblems,
-    setSelectedProblems,
-    isCustomProblem,
-    setIsCustomProblem,
-    customProblem,
-    setCustomProblem,
-    strSide,
-    setStrSide,
-    legend
-  } = useLegend();
-
-
-  useEffect(() => {
-    return () => {
-      console.log(legend)
-    }
-  }, [])
 
   return (
     <>
@@ -82,83 +27,31 @@ function App() {
       ) : (
         <>
           {/* Поле для названия организации */}
-          <NameAgency
-            nameAgency={nameAgency}
-            setNameAgency={setNameAgency}
-            warningMessage={warningMessage}
-          />
+          <NameAgency />
 
           {/* Поле для выбора сферы деятельности */}
-          <FieldAgency
-            fieldAgency={fieldAgency}
-            setFieldAgency={setFieldAgency}
-            customField={customField}
-            setCustomField={setCustomField}
-            isCustomField={isCustomField}
-            setIsCustomField={setIsCustomField}
-            warningMessage={warningMessage}
-            fieldAgencyList={fieldAgencyList}
-          />
+          <FieldAgency />
 
           {/* Поле для форматов работы */}
-          <WorkFormat
-            selectedWorkFormats={selectedWorkFormats}
-            setSelectedWorkFormats={setSelectedWorkFormats}
-            customWorkFormat={customWorkFormat}
-            setCustomWorkFormat={setCustomWorkFormat}
-            isCustomWorkFormat={isCustomWorkFormat}
-            setIsCustomWorkFormat={setIsCustomWorkFormat}
-            warningMessage={warningMessage}
-            workFormatsList={workFormatsList}
-          />
+          <WorkFormat />
 
           {/* Поле для выбора товара или услуги */}
-          <ProductField
-            productAd={productAd}
-            setProductAd={setProductAd}
-            productAdChoice={productAdChoice}
-            setProductAdChoice={setProductAdChoice}
-            productList={productList}
-          />
+          <ProductField />
 
           {/* Поле для выбора ценового сегмента */}
-          <PriceSegment
-            priceSegment={priceSegment}
-            setPriceSegment={setPriceSegment}
-            priceSegmentList={priceSegmentList}
-          />
+          <PriceSegment />
 
           {/* Поле для целей увеличения продаж */}
-          <UpGoal
-            selectedUpGoals={selectedUpGoals}
-            setSelectedUpGoals={setSelectedUpGoals}
-            customUpGoal={customUpGoal}
-            setCustomUpGoal={setCustomUpGoal}
-            isCustomUpGoal={isCustomUpGoal}
-            setIsCustomUpGoal={setIsCustomUpGoal}
-            upGoalsList={upGoalsList}
-          />
+          <UpGoal />
 
           {/* Поле для проблем бизнеса */}
-          <BusinessProblems
-            selectedProblems={selectedProblems}
-            setSelectedProblems={setSelectedProblems}
-            customProblem={customProblem}
-            setCustomProblem={setCustomProblem}
-            isCustomProblem={isCustomProblem}
-            setIsCustomProblem={setIsCustomProblem}
-            businessProblemsList={businessProblemsList}
-          />
+          <BusinessProblems />
 
           {/* Поле для сильных сторон */}
-          <StrongSides strSide={strSide} setStrSide={setStrSide} />
+          <StrongSides />
 
           {/* Поле ответа ИИ */}
-          <TargetAudienceGenerator
-            warningMessage={warningMessage}
-            setWarningMessage={setWarningMessage}
-            legend={legend}
-          />
+          <TargetAudienceGenerator />
         </>
       )}
     </>

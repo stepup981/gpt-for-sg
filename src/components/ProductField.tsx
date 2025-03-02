@@ -1,35 +1,25 @@
 // ProductField.tsx
 import React from "react";
 import { InputLabel, Dropdown } from "./ui";
+import { productList } from "@/resources";
+import { useLegendStore } from "@/store";
 
-interface IProductFieldProps {
-  productAd: string;
-  setProductAd: (value: string) => void;
-  productAdChoice: string;
-  setProductAdChoice: (value: string) => void;
-  productList: string[];
-}
+const ProductField = () => {
+  const {legend, setLegend} = useLegendStore()
 
-const ProductField: React.FC<IProductFieldProps> = ({
-  productAd,
-  setProductAd,
-  productAdChoice,
-  setProductAdChoice,
-  productList
-}) => {
   return (
     <div className="box product">
       <Dropdown
-        selectedOption={productAdChoice}
-        onOptionSelect={setProductAdChoice}
+        selectedOption={legend.productAdChoice}
+        onOptionSelect={(value) => setLegend({productAdChoice: value})}
         list={productList}
         titleList="Товар или услуга для продвижения"
         zeroSelect="Выберите товар или услуга"
       />
       <InputLabel
         labelDescription="Товар или услуга"
-        valueInput={productAd}
-        setText={setProductAd}
+        valueInput={legend.productAd}
+        setText={(value) => setLegend({productAd: value})}
       />
     </div>
   );

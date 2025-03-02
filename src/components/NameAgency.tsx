@@ -1,21 +1,16 @@
-// NameAgency.tsx
 import React from "react";
 import { InputLabel } from "./ui";
+import { useLegendStore } from "@/store";
 
-interface INameAgencyProps {
-  nameAgency: string;
-  setNameAgency: (value: string) => void;
-  warningMessage: string;
-}
-
-const NameAgency: React.FC<INameAgencyProps> = ({ nameAgency, setNameAgency, warningMessage }) => {
+const NameAgency = () => {
+  const { legend, setLegend } = useLegendStore();
   return (
     <div className="box name__agency">
       <InputLabel
         labelDescription="Наименование организации"
-        labelWarning={warningMessage}
-        valueInput={nameAgency}
-        setText={setNameAgency}
+        labelWarning={legend.warningMessage}
+        valueInput={legend.nameAgency}
+        setText={(value) => setLegend({ nameAgency: value })}
       />
     </div>
   );

@@ -1,21 +1,14 @@
 import { useState, useEffect } from "react";
 import { sendRequestToChat } from "../api/chat";
-import { useToken } from "../hooks";
+import { useToken } from ".";
 import { useLegendStore } from "@/store";
-import { ILegendValues } from "@/hooks/useLegend";
 
-interface IUseTargetAudienceGeneratorResult {
-  targetAudienceResponse: string;
-  errorOccurred: boolean;
-  isLoading: boolean;
-  generateTargetAudience: () => Promise<void>;
-}
-
-const useTargetAudienceGenerator = (): IUseTargetAudienceGeneratorResult => {
-  const { legend, setLegend } = useLegendStore();
+const useTargetAudienceGenerator = () => {
   const [targetAudienceResponse, setTargetAudienceResponse] = useState<string>("");
   const [isLoading, setLoading] = useState<boolean>(false);
   const [errorOccurred, setErrorOccurred] = useState<boolean>(false);
+  
+  const { legend, setLegend } = useLegendStore();
   const { token } = useToken();
 
   const generatePrompt = () => {
@@ -53,7 +46,7 @@ const useTargetAudienceGenerator = (): IUseTargetAudienceGeneratorResult => {
     const prompt = generatePrompt();
     setLoading(true);
     setErrorOccurred(false);
-    setLegend({ warningMessage: "" }); // очищаем предыдущее сообщение
+    setLegend({ warningMessage: "" }); 
 
     try {
       const response = await sendRequestToChat(token, prompt);

@@ -23,7 +23,6 @@ const BusinessProblems: React.FC = () => {
           titleList="Проблемы бизнеса"
         />
       ) : (
-        // Если выбран кастомный вариант ввода
         <InputLabel
           labelDescription="Введите свои проблемы (через запятую)"
           valueInput={legend.customProblem}

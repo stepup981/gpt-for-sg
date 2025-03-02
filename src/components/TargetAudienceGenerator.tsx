@@ -2,17 +2,20 @@ import React from "react";
 import { Button, Loader } from "./ui";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useTargetAudienceGenerator } from "@/hooks/"; 
+import { useTargetAudienceGenerator } from "@/hooks/";
 import { useLegendStore } from "@/store";
+import { useToken } from "@/hooks/";
 
 const TargetAudienceGenerator = () => {
   const { legend, setLegend } = useLegendStore();
-  const {
-    targetAudienceResponse,
-    errorOccurred,
-    isLoading,
-    generateTargetAudience
-  } = useTargetAudienceGenerator();
+  const { targetAudienceResponse, errorOccurred, isLoading, generateTargetAudience } =
+    useTargetAudienceGenerator();
+  const { fetchNewToken } = useToken();
+
+  const updateToken = async () => {
+    await fetchNewToken();
+    setLegend({ warningMessage: "" });
+  };
 
   return (
     <div>
@@ -26,7 +29,7 @@ const TargetAudienceGenerator = () => {
       {errorOccurred && (
         <div className="error-message">
           <p className="help is-danger">{legend.warningMessage}</p>
-          <Button onClick={() => setLegend({ warningMessage: "" })} isLoading={isLoading} disabled={isLoading}>
+          <Button onClick={updateToken} isLoading={isLoading} disabled={isLoading}>
             Запросить новый токен
           </Button>
         </div>

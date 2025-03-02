@@ -19,7 +19,9 @@ interface ILegendState {
     customProblem: string;
     isCustomProblem: boolean;
     strSide: string;
-    warningMessage: string;
+    
+    warningMessage: string
+
   };
   setLegend: (updates: Partial<ILegendState["legend"]>) => void;
 }
@@ -50,6 +52,9 @@ const useLegendStore = create<ILegendState>((set) => ({
     isCustomProblem: false,
 
     strSide: "",
+
+    
+
     warningMessage: ''
   },
   setLegend: (updates) =>

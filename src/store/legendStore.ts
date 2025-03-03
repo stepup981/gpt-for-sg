@@ -5,23 +5,21 @@ interface ILegendState {
     nameAgency: string;
     fieldAgency: string;
     customField: string;
-    isCustomField: boolean,
+    isCustomField: boolean;
     workFormats: string[];
     customWorkFormat: string;
-    isCustomWorkFormat: boolean
+    isCustomWorkFormat: boolean;
     productAd: string;
     productAdChoice: string;
     priceSegment: string;
     upGoals: string[];
     customUpGoal: string;
-    isCustomUpGoal: boolean
+    isCustomUpGoal: boolean;
     upProblems: string[];
     customProblem: string;
     isCustomProblem: boolean;
     strSide: string;
-    
-    warningMessage: string
-
+    warningMessageLegend: string;
   };
   setLegend: (updates: Partial<ILegendState["legend"]>) => void;
 }
@@ -33,7 +31,7 @@ const useLegendStore = create<ILegendState>((set) => ({
     fieldAgency: "",
     customField: "",
     isCustomField: false,
-    
+
     workFormats: [],
     customWorkFormat: "",
     isCustomWorkFormat: false,
@@ -53,14 +51,12 @@ const useLegendStore = create<ILegendState>((set) => ({
 
     strSide: "",
 
-    
-
-    warningMessage: ''
+    warningMessageLegend: ""
   },
   setLegend: (updates) =>
     set((state) => ({
-      legend: { ...state.legend, ...updates },
-    })),
+      legend: { ...state.legend, ...updates }
+    }))
 }));
 
-export default useLegendStore
+export default useLegendStore;

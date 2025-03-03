@@ -9,16 +9,17 @@ import {
   UpGoal,
   BusinessProblems,
   StrongSides,
-  TargetAudienceGenerator
+  TargetAudienceGenerator,
+  TargetAudienceSelector
 } from "./components";
 import { Loader } from "./components/ui";
 
-import { useToken, useLegend } from "./hooks";
-import { useLegendStore } from "./store";
+import { useToken } from "./hooks";
+
 
 function App() {
 
-  const { token, loading, errorToken } = useToken();
+  const { loading } = useToken();
 
   return (
     <>
@@ -52,6 +53,7 @@ function App() {
 
           {/* Поле ответа ИИ */}
           <TargetAudienceGenerator />
+          <TargetAudienceSelector/>
         </>
       )}
     </>

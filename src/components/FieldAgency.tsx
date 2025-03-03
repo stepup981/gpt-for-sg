@@ -19,7 +19,7 @@ const FieldAgency: React.FC = () => {
           labelDescription="Введите свою сферу"
           valueInput={legend.customField}
           setText={(value) => setLegend({ customField: value })}
-          labelWarning={legend.warningMessage}
+          labelWarning={legend.warningMessageLegend}
         />
       ) : (
         <Dropdown
@@ -28,7 +28,7 @@ const FieldAgency: React.FC = () => {
           list={fieldAgencyList}
           titleList="Сфера деятельности организации"
           zeroSelect="Выберите сферу..."
-          warning={legend.warningMessage}
+          warning={legend.warningMessageLegend}
         />
       )}
       <Switcher label="Свой вариант" isChecked={legend.isCustomField} onToggle={setIsCustomField} />

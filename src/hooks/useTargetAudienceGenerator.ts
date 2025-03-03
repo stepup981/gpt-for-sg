@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
 import { sendRequestToChat } from "../api/chat";
 import { useToken } from ".";
-import { useLegendStore } from "@/store";
+import { useLegendStore, useTargetStore } from "@/store";
 
 const useTargetAudienceGenerator = () => {
-  const [targetAudienceResponse, setTargetAudienceResponse] = useState<string>("");
   const [isLoading, setLoading] = useState<boolean>(false);
   const [errorOccurred, setErrorOccurred] = useState<boolean>(false);
-  
+
+  const { setTarget } = useTargetStore();
   const { legend, setLegend } = useLegendStore();
   const { token } = useToken();
 
-  const generatePrompt = () => {
+  const generatePromptAudienceGenerator = () => {
     let prompt =
       "Определить 3 наиболее перспективные целевые аудитории из указанных бизнес-проблем:";
 
-    if (legend.upProblems) {
-      prompt += ` ${legend.upProblems}`;
+    if (legend.upProblems || legend.customProblem) {
+      prompt += ` ${legend.upProblems ? legend.upProblems : legend.customProblem}`;
     }
 
-    if (legend.upGoals) {
-      prompt += `, что приведет к одной конкретной цели рекламной кампании: ${legend.upGoals}`;
+    if (legend.upGoals || legend.customUpGoal) {
+      prompt += `, что приведет к одной конкретной цели рекламной кампании: ${legend.upGoals ? legend.upGoals : legend.customProblem}`;
     }
 
     if (legend.strSide) {
@@ -43,21 +43,22 @@ const useTargetAudienceGenerator = () => {
   };
 
   const handleApiRequest = async () => {
-    const prompt = generatePrompt();
+    const prompt = generatePromptAudienceGenerator();
     setLoading(true);
     setErrorOccurred(false);
-    setLegend({ warningMessage: "" }); 
+    setTarget({ warningMessageTarget: "" });
 
     try {
+      console.log(prompt);
       const response = await sendRequestToChat(token, prompt);
       const result = response.choices[0]?.message.content || "Ошибка получения данных.";
-      setTargetAudienceResponse(result);
+      setTarget({ targetAudienceGenerator: result });
       localStorage.setItem("targetAudienceResponse", result);
     } catch (error) {
       console.error(error);
       setErrorOccurred(true);
-      setLegend({
-        warningMessage:
+      setTarget({
+        warningMessageTarget:
           "Обнаружен сбой. Запросите новый токен и нажмите на 'Сгенерировать ЦА'. Если не получилось, значит ведутся тех. работы. Попробуйте позже."
       });
     } finally {
@@ -68,23 +69,22 @@ const useTargetAudienceGenerator = () => {
   useEffect(() => {
     const savedResponse = localStorage.getItem("targetAudienceResponse");
     if (savedResponse) {
-      setTargetAudienceResponse(savedResponse);
+      setTarget({ targetAudienceGenerator: savedResponse });
     }
   }, []);
 
-  const generateTargetAudience = async () => {
-    if (!legend.nameAgency || !legend.fieldAgency) {
-      setLegend({ warningMessage: "Поле обязательно для заполнения" });
+  const generateAudienceGenerator = async () => {
+    if (!legend.nameAgency || (!legend.fieldAgency && !legend.customField)) {
+      setLegend({ warningMessageLegend: "Поле обязательно для заполнения" });
       return;
     }
     await handleApiRequest();
   };
 
   return {
-    targetAudienceResponse,
     errorOccurred,
     isLoading,
-    generateTargetAudience
+    generateAudienceGenerator
   };
 };
 

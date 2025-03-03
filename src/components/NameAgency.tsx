@@ -10,7 +10,7 @@ const NameAgency = () => {
     <div className="box name__agency">
       <InputLabel
         labelDescription="Наименование организации"
-        labelWarning={legend.warningMessage}
+        labelWarning={legend.warningMessageLegend}
         valueInput={legend.nameAgency}
         setText={(value) => setLegend({ nameAgency: value })}
       />

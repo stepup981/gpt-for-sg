@@ -8,6 +8,9 @@ interface ITargetState {
     isCustomAudienceSelector: boolean
     targetResponse: string
 
+
+    isLoadingAudienceGenerator: boolean
+    isLoadingAudienceSelector: boolean
     warningMessageTarget: string;
   };
   setTarget: (updates: Partial<ITargetState["target"]>) => void;
@@ -20,6 +23,8 @@ const useTargetStore = create<ITargetState>((set) => ({
     targetAudienceSelectorCustom: "",
     isCustomAudienceSelector: false,
     targetResponse: '',
+    isLoadingAudienceGenerator: false,
+    isLoadingAudienceSelector: false,
     warningMessageTarget: "",
     
   },

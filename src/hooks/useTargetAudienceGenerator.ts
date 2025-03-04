@@ -3,8 +3,12 @@ import { sendRequestToChat } from "../api/chat";
 import { useToken } from ".";
 import { useLegendStore, useTargetStore } from "@/store";
 
-const useTargetAudienceGenerator = () => {
-  const [isLoading, setLoading] = useState<boolean>(false);
+interface ITargetAudienceGenerator {
+  errorOccurred: boolean,
+  generateAudienceGenerator: () => void;
+}
+
+const useTargetAudienceGenerator = (): ITargetAudienceGenerator => {
   const [errorOccurred, setErrorOccurred] = useState<boolean>(false);
 
   const { setTarget } = useTargetStore();
@@ -27,8 +31,8 @@ const useTargetAudienceGenerator = () => {
       prompt += `, учитывая сильные стороны: ${legend.strSide}`;
     }
 
-    if (legend.fieldAgency) {
-      prompt += `, Бизнес сфера: ${legend.fieldAgency}`;
+    if (legend.fieldAgency || legend.customField) {
+      prompt += `, Бизнес сфера: ${legend.fieldAgency ? legend.fieldAgency : legend.customField}`;
     }
 
     prompt += `\n\nРанжировать целевые аудитории по степени их перспективности, основываясь на следующих критериях:`;
@@ -44,7 +48,7 @@ const useTargetAudienceGenerator = () => {
 
   const handleApiRequest = async () => {
     const prompt = generatePromptAudienceGenerator();
-    setLoading(true);
+    setTarget({isLoadingAudienceGenerator: true});
     setErrorOccurred(false);
     setTarget({ warningMessageTarget: "" });
 
@@ -62,7 +66,7 @@ const useTargetAudienceGenerator = () => {
           "Обнаружен сбой. Запросите новый токен и нажмите на 'Сгенерировать ЦА'. Если не получилось, значит ведутся тех. работы. Попробуйте позже."
       });
     } finally {
-      setLoading(false);
+      setTarget({isLoadingAudienceGenerator: false});
     }
   };
 
@@ -78,12 +82,12 @@ const useTargetAudienceGenerator = () => {
       setLegend({ warningMessageLegend: "Поле обязательно для заполнения" });
       return;
     }
+    setTarget({targetResponse: ''})
     await handleApiRequest();
   };
 
   return {
     errorOccurred,
-    isLoading,
     generateAudienceGenerator
   };
 };

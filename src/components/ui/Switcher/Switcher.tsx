@@ -9,7 +9,7 @@ interface ISwitcherProps {
 
 const Switcher: React.FC<ISwitcherProps> = ({ isChecked, onToggle, label }) => {
   return (
-    <div className="control mt-3">
+    <div className="control mt-3 block">
       <label className={style.switchContainer}>
         <input
           type="checkbox"

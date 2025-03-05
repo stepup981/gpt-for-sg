@@ -1,6 +1,6 @@
 // UpGoalField.tsx
 import React from "react";
-import { InputLabel, Switcher, CheckboxGroup } from "./ui";
+import { InputLabel, Switcher, CheckboxGroup } from "../ui";
 import upGoalsList from "@/resources/upGoalList";
 import { useLegendStore } from "@/store";
 

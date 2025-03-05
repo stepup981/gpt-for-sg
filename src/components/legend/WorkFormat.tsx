@@ -1,5 +1,5 @@
 import React from "react";
-import { InputLabel, Switcher, CheckboxGroup } from "./ui";
+import { InputLabel, Switcher, CheckboxGroup } from "../ui";
 import { useLegendStore } from "@/store";
 import { workFormatsList } from "@/resources";
 
@@ -9,8 +9,8 @@ const WorkFormat: React.FC = () => {
   const setIsCustomWorkFormat = (value: boolean) => {
     setLegend({
       isCustomWorkFormat: value,
-      workFormats: value ? [] : legend.workFormats, 
-      customWorkFormat: value ? "" : legend.customWorkFormat,
+      workFormats: value ? [] : legend.workFormats,
+      customWorkFormat: value ? "" : legend.customWorkFormat
     });
   };
 
@@ -20,14 +20,14 @@ const WorkFormat: React.FC = () => {
         <InputLabel
           labelDescription="Введите свой формат работы"
           valueInput={legend.customWorkFormat}
-          setText={(value) => setLegend({customWorkFormat: value})}
+          setText={(value) => setLegend({ customWorkFormat: value })}
           labelWarning=""
         />
       ) : (
         <CheckboxGroup
           selectedOptions={legend.workFormats}
-          onOptionSelect={(value) => setLegend({workFormats: value})}
-          list={workFormatsList} 
+          onOptionSelect={(value) => setLegend({ workFormats: value })}
+          list={workFormatsList}
           titleList="Форматы работы"
         />
       )}

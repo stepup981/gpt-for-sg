@@ -1,6 +1,6 @@
 // PriceSegmentField.tsx
 import React from "react";
-import { Dropdown } from "./ui";
+import { Dropdown } from "../ui";
 import { priceSegmentList } from "@/resources";
 import { useLegendStore } from "@/store";
 

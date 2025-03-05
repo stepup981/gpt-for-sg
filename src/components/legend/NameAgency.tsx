@@ -1,8 +1,6 @@
 import React from "react";
-import { InputLabel } from "./ui";
+import { InputLabel } from "../ui";
 import { useLegendStore } from "@/store";
-
-
 
 const NameAgency = () => {
   const { legend, setLegend } = useLegendStore();

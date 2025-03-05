@@ -1,4 +1,4 @@
-import { InputLabel, Switcher, Button, LoaderWriter } from "./ui";
+import { InputLabel, Switcher, Button, LoaderWriter } from "../ui";
 import { useTargetStore } from "@/store";
 import { useTargetAudienceSelector } from "@/hooks";
 import ReactMarkdown from "react-markdown";
@@ -50,14 +50,18 @@ const TargetAudienceSelector: React.FC = () => {
             isChecked={target.isCustomAudienceSelector}
             onToggle={setIsCustomAudienceSelectror}
           />
-          <Button onClick={generateAudienceSelector} isLoading={target.isLoadingAudienceSelector} disabled={target.isLoadingAudienceSelector}>
+          <Button
+            onClick={generateAudienceSelector}
+            isLoading={target.isLoadingAudienceSelector}
+            disabled={target.isLoadingAudienceSelector}
+          >
             Сохранить выбор ЦА
           </Button>
           {/* Выводим результат, если он есть */}
           {target.isLoadingAudienceSelector ? (
             <LoaderWriter />
           ) : (
-            target.targetResponse &&(
+            target.targetResponse && (
               <div className="box response">
                 <h2 className="title is 2">Сгенерированные ЦА</h2>
                 <div className="markdown">

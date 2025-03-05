@@ -1,14 +1,14 @@
 import React from "react";
-import { InputLabel, Dropdown, Switcher } from "./ui";
+import { InputLabel, Dropdown, Switcher } from "../ui";
 import { useLegendStore } from "@/store";
 import { fieldAgencyList } from "@/resources";
 
 const FieldAgency: React.FC = () => {
   const { legend, setLegend } = useLegendStore();
   const setIsCustomField = (value: boolean) => {
-    setLegend({ 
+    setLegend({
       isCustomField: value,
-      fieldAgency: value ? "" : legend.fieldAgency,
+      fieldAgency: value ? "" : legend.fieldAgency
     });
   };
 

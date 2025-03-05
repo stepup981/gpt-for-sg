@@ -1,4 +1,4 @@
-import { Button, LoaderWriter } from "./ui";
+import { Button, LoaderWriter } from "../ui";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useTargetAudienceGenerator } from "@/hooks/";

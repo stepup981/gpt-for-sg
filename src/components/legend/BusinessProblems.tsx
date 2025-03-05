@@ -1,5 +1,5 @@
 import React from "react";
-import { InputLabel, Switcher, CheckboxGroup } from "./ui";
+import { InputLabel, Switcher, CheckboxGroup } from "../ui";
 import { useLegendStore } from "@/store";
 import { businessProblemsList } from "@/resources";
 const BusinessProblems: React.FC = () => {
@@ -8,8 +8,8 @@ const BusinessProblems: React.FC = () => {
   const setIsCustomProblem = (value: boolean) => {
     setLegend({
       isCustomProblem: value,
-      upProblems: value ? [] : legend.upProblems, 
-      customProblem: value ? "" : legend.customProblem 
+      upProblems: value ? [] : legend.upProblems,
+      customProblem: value ? "" : legend.customProblem
     });
   };
 
@@ -19,7 +19,7 @@ const BusinessProblems: React.FC = () => {
         <CheckboxGroup
           selectedOptions={legend.upProblems}
           onOptionSelect={(value) => setLegend({ upProblems: value })}
-          list={businessProblemsList}  
+          list={businessProblemsList}
           titleList="Проблемы бизнеса"
         />
       ) : (

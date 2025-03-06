@@ -7,10 +7,11 @@ interface ITargetState {
     targetAudienceSelectorCustom: string
     isCustomAudienceSelector: boolean
     targetResponse: string
-
-
+    targetShortResponse: string;
+    JTJTBDResponse: string;
     isLoadingAudienceGenerator: boolean
     isLoadingAudienceSelector: boolean
+    isLoadingChoiceAndJTJTBD: boolean
     warningMessageTarget: string;
   };
   setTarget: (updates: Partial<ITargetState["target"]>) => void;
@@ -23,8 +24,11 @@ const useTargetStore = create<ITargetState>((set) => ({
     targetAudienceSelectorCustom: "",
     isCustomAudienceSelector: false,
     targetResponse: '',
+    targetShortResponse: '',
+    JTJTBDResponse: '',
     isLoadingAudienceGenerator: false,
     isLoadingAudienceSelector: false,
+    isLoadingChoiceAndJTJTBD: false,
     warningMessageTarget: "",
     
   },

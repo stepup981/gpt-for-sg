@@ -8,3 +8,4 @@ export { default as BusinessProblems } from "./legend/BusinessProblems";
 export { default as StrongSides } from "./legend/StrongSides";
 export { default as TargetAudienceGenerator } from "./target-response/TargetAudienceGenerator";
 export { default as TargetAudienceSelector } from "./target-response/TargetAudienceSelector";
+export { default as TargetChoiceUnload } from "./target-response/TargetChoiceUnload";

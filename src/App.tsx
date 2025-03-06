@@ -10,15 +10,14 @@ import {
   BusinessProblems,
   StrongSides,
   TargetAudienceGenerator,
-  TargetAudienceSelector
+  TargetAudienceSelector,
+  TargetChoiceUnload
 } from "./components";
 import { Loader } from "./components/ui";
 
 import { useToken } from "./hooks";
 
-
 function App() {
-
   const { loading } = useToken();
 
   return (
@@ -53,7 +52,8 @@ function App() {
 
           {/* Поле ответа ИИ */}
           <TargetAudienceGenerator />
-          <TargetAudienceSelector/>
+          <TargetAudienceSelector />
+          <TargetChoiceUnload />
         </>
       )}
     </>
